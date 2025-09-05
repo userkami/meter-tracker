@@ -17,6 +17,22 @@ self.addEventListener('install', (event) => {
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
+    caches.keys().tconst CACHE_NAME = 'meter-tracker-v1';
+const urlsToCache = [
+  '/meter-tracker/',
+  '/meter-tracker/index.html'
+];
+
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then((cache) => cache.addAll(urlsToCache))
+      .then(() => self.skipWaiting())
+  );
+});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
     caches.keys().then((keyList) => {
       return Promise.all(
         keyList.map((key) => {
@@ -31,8 +47,7 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  const url = new URL(event.request.url);
-  if (url.pathname.startsWith('/meter-tracker/')) {
+  if (event.request.url.startsWith(self.location.origin)) {
     event.respondWith(
       caches.match(event.request)
         .then((response) => {

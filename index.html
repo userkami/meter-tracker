@@ -16,14 +16,14 @@
     <meta name="description" content="Track your dual electricity meters and manage 200-unit monthly limit." />
 
     <!-- React (Production - Critical Fix) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 
-    <!-- Babel for JSX -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<!-- Babel -->
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com"></script>
 
     <!-- Tailwind Config -->
     <script>
@@ -71,12 +71,10 @@
     <!-- Service Worker Registration -->
     <script>
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/meter-tracker/sw.js')
-                    .then(reg => console.log('✅ SW registered:', reg.scope))
-                    .catch(err => console.error('❌ SW registration failed:', err));
-            });
-        }
+    navigator.serviceWorker.register('/meter-tracker/sw.js')
+        .then(reg => console.log('✅ SW registered:', reg.scope))
+        .catch(err => console.error('❌ SW registration failed:', err));
+}
     </script>
 
     <!-- Main App -->
