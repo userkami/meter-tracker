@@ -1,9 +1,9 @@
 const CACHE_NAME = 'meter-tracker-v1';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/icon.svg'
+  '/meter-tracker/',
+  '/meter-tracker/index.html',
+  '/meter-tracker/manifest.json',
+  '/meter-tracker/icon.svg'
 ];
 
 self.addEventListener('install', (event) => {
@@ -11,6 +11,7 @@ self.addEventListener('install', (event) => {
     caches.open(CACHE_NAME)
       .then((cache) => cache.addAll(urlsToCache))
       .then(() => self.skipWaiting())
+      .catch(err => console.error('Cache addAll failed:', err))
   );
 });
 
@@ -30,10 +31,13 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        return response || fetch(event.request);
-      })
-  );
+  const url = new URL(event.request.url);
+  if (url.pathname.startsWith('/meter-tracker/')) {
+    event.respondWith(
+      caches.match(event.request)
+        .then((response) => {
+          return response || fetch(event.request);
+        })
+    );
+  }
 });

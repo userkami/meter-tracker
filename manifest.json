@@ -2,13 +2,13 @@
   "name": "Electricity Meter Tracker",
   "short_name": "MeterTracker",
   "description": "Track your dual electricity meters and manage 200-unit monthly limit",
-  "start_url": "/",
+  "start_url": "/meter-tracker/",
   "display": "standalone",
   "background_color": "#0073e6",
   "theme_color": "#0073e6",
   "icons": [
     {
-      "src": "/icon.svg",
+      "src": "/meter-tracker/icon.svg",
       "type": "image/svg+xml",
       "sizes": "any"
     }

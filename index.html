@@ -5,11 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Electricity Meter Tracker</title>
 
-    <!-- PWA Manifest (Inline Base64 - No 404) -->
-    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkVsZWN0cmljaXR5IE1ldGVyIFRyYWNrZXIiLAogICJzaG9ydF9uYW1lIjogIk1ldGVyVHJhY2tlciIsCiAgImRlc2NyaXB0aW9uIjogIlRyYWNrIHlvdXIgZHVhbCBlbGVjdHJpY2l0eSBtZXRlcnMgYW5kIG1hbmFnZSAyMDAtdW5pdCBtb250aGx5IGxpbWl0IiwKICAic3RhcnRfdXJsIjogIi9tZXRlci10cmFja2VyLyIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzAwNzNlNiIsCiAgInRoZW1lX2NvbG9yIjogIiMwMDczZTYiLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJodHRwczovL3VzZXJrYW1pLmdpdGh1Yi5pb29tZXRlci10cmFja2VyL2ljb24uc3ZnIiwKICAgICAgInR5cGUiOiAiaW1hZ2Uvc3ZnK3htbCIsCiAgICAgICJzaXplcyI6ICJhbnkiCiAgICB9CiAgXQp9" />
-
-    <!-- Apple Touch Icon -->
-    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9IiMwMDczZTYiPjxwb2x5Z29uIHBvaW50cz0iMTMgMiAzIDE0IDEyIDE0IDExIDIyIDIxIDEwIDEyIDEwIDEzIDIiLz48L3N2Zz4=" />
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/meter-tracker/manifest.json" />
+    <link rel="apple-touch-icon" href="/meter-tracker/icon.svg" />
 
     <!-- Meta -->
     <meta name="theme-color" content="#0073e6" />
@@ -21,10 +19,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 
-    <!-- Babel (for JSX) -->
+    <!-- Babel for JSX -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 
     <!-- Tailwind Config -->
@@ -70,7 +68,7 @@
 <body class="bg-gray-50">
     <div id="root"></div>
 
-    <!-- Service Worker Registration (Fixed Path) -->
+    <!-- Service Worker Registration -->
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -79,20 +77,12 @@
                     .catch(err => console.error('❌ SW registration failed:', err));
             });
         }
-
-        // Optional: PWA Install Prompt
-        let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-        });
     </script>
 
-    <!-- Main App (JSX) -->
+    <!-- Main App -->
     <script type="text/babel">
         const { useState, useEffect } = React;
 
-        // Icons (Lucide-style)
         const icons = {
             Zap: () => React.createElement('svg', { width: 24, height: 24, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' }, 
                 React.createElement('polygon', { points: '13 2 3 14 12 14 11 22 21 10 12 10 13 2' })
@@ -155,12 +145,11 @@
                 endOfCycle: false
             });
 
-            // Local Storage Helpers
             const saveToStorage = (key, data) => {
                 try {
                     localStorage.setItem(key, JSON.stringify(data));
                 } catch (e) {
-                    console.error('Save error:', e);
+                    console.error(`Error saving ${key}:`, e);
                 }
             };
 
@@ -169,7 +158,7 @@
                     const item = localStorage.getItem(key);
                     return item ? JSON.parse(item) : defaultValue;
                 } catch (e) {
-                    console.error('Load error:', e);
+                    console.error(`Error loading ${key}:`, e);
                     return defaultValue;
                 }
             };
@@ -291,10 +280,31 @@
                 setCurrentView('dashboard');
             };
 
+            const exportToCSV = () => {
+                const csvData = readings.map(r => {
+                    const meter = meters.find(m => m.id === r.meterId);
+                    return [
+                        r.date,
+                        meter?.meterNumber || '',
+                        meter?.nickname || '',
+                        r.reading,
+                        r.endOfCycle ? 'Yes' : 'No'
+                    ].join(',');
+                });
+                const csv = ['Date,Meter Number,Nickname,Reading,End of Cycle', ...csvData].join('\n');
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'meter-readings.csv';
+                a.click();
+                setTimeout(() => URL.revokeObjectURL(url), 100);
+                alert('Exported successfully!');
+            };
+
             const totalUsage = getTotalUsage();
             const usagePercent = Math.min(100, (totalUsage / 200) * 100);
 
-            // Dashboard View
             if (currentView === 'dashboard') {
                 return (
                     <div className="min-h-screen pb-20">
@@ -359,10 +369,8 @@
                 );
             }
 
-            // Add your other views (addMeter, editMeter, etc.) here if needed
-            // For now, we're focusing on getting the dashboard to load
-
-            return <div className="p-4 text-center">View not implemented yet</div>;
+            // Add other views (addMeter, editMeter, addReading, reports) here later
+            return <div className="p-4 text-center">Other views coming soon</div>;
         };
 
         ReactDOM.render(<ElectricityMeterTracker />, document.getElementById('root'));
