@@ -1,32 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Electricity Meter Tracker</title>
 
-    <!-- Meta Tags -->
-    <meta name="description" content="Track your dual electricity meters and manage 200-unit monthly limit." />
-    <meta name="theme-color" content="#0073e6" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <meta name="apple-mobile-web-app-title" content="MeterTracker" />
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/icon.svg">
+    <meta name="theme-color" content="#0073e6">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
 
-    <!-- Manifest -->
-    <link rel="manifest" href="/manifest.json" />
-    <link rel="apple-touch-icon" href="/assets/icon.svg" />
-
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="tailwind.config.js"></script>
-
-    <!-- Babel + React -->
+    <!-- React (Production) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+
+    <!-- Babel -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Tailwind Config (inline) -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    screens: {
+                        'xs': '475px',
+                    }
+                }
+            }
+        }
+    </script>
+
     <!-- Styles -->
-    <link rel="stylesheet" href="styles.css" />
+    <style>
+        body { overscroll-behavior: none; -webkit-touch-callout: none; user-select: none; }
+        button, input, select { min-height: 44px; touch-action: manipulation; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .meter-card { transition: transform 0.2s ease; }
+        .meter-card:active { transform: scale(0.98); }
+    </style>
 </head>
 <body class="bg-gray-50">
     <div id="root"></div>
