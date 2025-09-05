@@ -1,0 +1,38 @@
+/* PWA & Mobile Optimizations */
+body {
+    overscroll-behavior: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+button, input, select, textarea {
+    min-height: 44px;
+    touch-action: manipulation;
+}
+
+/* Hide scrollbars */
+.hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+/* Active feedback for touch */
+.meter-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.meter-card:active {
+    transform: scale(0.98);
+}
+
+/* Install Prompt Animation */
+@keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+}
+.install-prompt {
+    animation: slideUp 0.3s ease;
+}
